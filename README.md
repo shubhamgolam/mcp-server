@@ -15,6 +15,11 @@ Instead of manually writing Java code and copy-pasting it into Burp, you just de
 
 ...and the agent generates, saves it in the centralized lirabray — all without leaving your chat window.
 
+☝️ The smarter and more context-aware your AI model is, the more precise and production-ready the generated Bambda will be.
+
+
+> 💡 **Before using the tool**, train your AI agent using the pre-built training prompt 
+> located at `mcp-server/Training Prompts/TrainingPrompt.txt`. Feel free to modify it to make the agent more smarter.
 
 ---
 
