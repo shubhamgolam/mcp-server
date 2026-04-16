@@ -277,7 +277,6 @@ magenta for Repeater, green for Scanner.
 This project builds directly on the outstanding foundational work by the **PortSwigger** team.
 
 - 🏗️ **Original Repository:** [PortSwigger/mcp-server](https://github.com/PortSwigger/mcp-server)
-- 📖 **Montoya API Docs:** [portswigger.net/burp/documentation/desktop/extend-burp](https://portswigger.net/burp/documentation/desktop/extend-burp)
 - 🧩 **Bambda Library:** [github.com/PortSwigger/bambdas](https://github.com/PortSwigger/bambdas)
 
 > This fork maintains full compatibility with the original PortSwigger MCP Server while extending it for advanced security automation workflows.
