@@ -1,11 +1,7 @@
-# 🛡️ Burp Suite MCP Server — Extended Edition
+# 🚀 Burp Suite MCP Server — Extended Edition
 
-> A feature-rich fork of the official [PortSwigger MCP Server](https://github.com/PortSwigger/mcp-server) that supercharges your AI-assisted penetration testing workflow with **Bambda generation**, **BCheck scripting**, and deep Burp Suite integration.
+> A feature-rich fork of the official [PortSwigger MCP Server](https://github.com/PortSwigger/mcp-server) that supercharges your AI-assisted penetration testing workflow with **Bambda generation** and **BCheck scripting**,.
 
-![Burp Suite](https://img.shields.io/badge/Burp%20Suite-2025.10%2B-orange?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyeiIvPjwvc3ZnPg==)
-![Kotlin](https://img.shields.io/badge/Kotlin-1.9%2B-purple?style=for-the-badge&logo=kotlin)
-![MCP](https://img.shields.io/badge/MCP-Compatible-blue?style=for-the-badge)
-![License](https://img.shields.io/badge/License-Apache%202.0-green?style=for-the-badge)
 
 ---
 
@@ -17,9 +13,8 @@ Instead of manually writing Java code and copy-pasting it into Burp, you just de
 
 > *"Create a proxy filter that shows only POST requests with JSON responses"*
 
-...and the agent generates, saves, and applies it — all without leaving your chat window.
+...and the agent generates, saves it in the centralized lirabray — all without leaving your chat window.
 
-<!-- SCREENSHOT: Hero shot — Claude chat on left, Burp Bambda library on right showing a freshly created script -->
 
 ---
 
@@ -48,7 +43,7 @@ The original MCP server exposes Burp's core tools to AI agents. This fork adds:
 | `sitemap` | `VIEW_FILTER` | `SITEMAP` | Target → Site map → Filter → Script |
 | `repeater custom action` | `CUSTOM_ACTION` | `REPEATER` | Repeater → Custom actions |
 | `custom column` | `CUSTOM_COLUMN` | `PROXY_HTTP_HISTORY` | HTTP History / Logger → Custom column |
-| `scanner active` | `SCAN_CHECK_ACTIVE_PER_REQUEST` | `SCANNER` | Extensions → Bambda library → Active scan checks |
+| `active scanner check` | `SCAN_CHECK_ACTIVE_PER_REQUEST` | `SCANNER` | Extensions → Bambda library → Active scan checks |
 
 ---
 
@@ -73,7 +68,7 @@ In the **MCP tab** inside Burp:
 - ✅ **Enable tools that can edit your config** — Required for Bambda creation
 - 🌐 **Host/Port** — Default is `http://127.0.0.1:9876` (change if needed)
 
-<!-- SCREENSHOT: Burp MCP tab showing the Enabled checkbox, config editing checkbox, and port settings -->
+
 
 ### Step 3 — Connect Your AI Client
 
@@ -156,7 +151,6 @@ Create a bambda in proxy http location named "Target Scope Filter"
 that only shows requests going to api.example.com
 ```
 
-<!-- SCREENSHOT: Proxy HTTP History with a Bambda filter applied, showing filtered results -->
 
 ---
 
@@ -181,7 +175,6 @@ Create a bambda in repeater custom action location named "GraphQL Introspection"
 that tests whether GraphQL introspection is enabled on the current request.
 ```
 
-<!-- SCREENSHOT: Repeater tab showing the Custom Actions dropdown with newly created Bambda actions listed -->
 
 ---
 
@@ -206,7 +199,6 @@ that rewrites the Content-Security-Policy header to redirect report-uri
 and report-to to a Burp Collaborator payload URL.
 ```
 
-<!-- SCREENSHOT: Proxy Match and Replace tab showing the new Bambda-powered rule in the list -->
 
 ---
 
@@ -225,7 +217,6 @@ Create a bambda custom column named "Status"
 that returns the HTTP response status code as a string.
 ```
 
-<!-- SCREENSHOT: HTTP History table showing custom column "GraphQL Operation" populated with operation names -->
 
 ---
 
@@ -239,7 +230,7 @@ reflected in Access-Control-Allow-Origin. Report HIGH severity if credentials
 are also allowed.
 ```
 
-<!-- SCREENSHOT: Scanner findings showing a CORS issue raised by the custom Bambda scan check -->
+
 
 ---
 
@@ -275,49 +266,6 @@ magenta for Repeater, green for Scanner.
 
 ---
 
-## 🏗️ How It Works
-
-```
-┌─────────────────┐        MCP Protocol         ┌──────────────────────────┐
-│                 │  ──────────────────────────▶ │                          │
-│   AI Agent      │                              │   Burp MCP Extension     │
-│  (Claude etc.)  │  ◀──────────────────────────  │   (this fork)            │
-│                 │        Tool Results           │                          │
-└─────────────────┘                              └────────────┬─────────────┘
-                                                              │
-                                                 create_bambda tool call
-                                                              │
-                                                              ▼
-                                                 ┌────────────────────────┐
-                                                 │  BambdaGenerator.kt    │
-                                                 │  Parses location +     │
-                                                 │  generates Java code   │
-                                                 └────────────┬───────────┘
-                                                              │
-                                                  Montoya API importBambda()
-                                                              │
-                                                              ▼
-                                                 ┌────────────────────────┐
-                                                 │   Burp Bambda Library  │
-                                                 │   Ready to apply! ✅   │
-                                                 └────────────────────────┘
-```
-
----
-
-## 🐛 Troubleshooting
-
-| Error | Cause | Fix |
-|:---|:---|:---|
-| `function is required, location is required` | Wrong JSON field names | Ensure fields are `"function"` and `"location"` not `"functionType"` and `"script"` |
-| `LOADED_WITH_ERRORS` | Wrong `function` or `location` value | Check the supported locations table above for exact values |
-| `Unresolved reference 'success'` | `BambdaImportResult` is an enum, not interface | Use `.toString().contains("SUCCESS")` instead of `.success()` |
-| `Packages cannot be imported` | Broken or dangling import in `Tools.kt` | Check for `import net.portswigger.mcp.tools.` with nothing after the dot |
-| `Syntax error: Expecting a top level declaration` | `package` declaration missing or misplaced | `package net.portswigger.mcp.tools` must be the very first line |
-| Bambda saves but does nothing | Wrong context object used | Sitemap uses `node`, WebSocket uses `message`, others use `requestResponse` |
-| Match & Replace Bambda ignored | Returning boolean instead of object | Return the modified `request` or `response` object, not `true`/`false` |
-
----
 
 ## 🤝 Credits & Acknowledgments
 
@@ -326,7 +274,6 @@ This project builds directly on the outstanding foundational work by the **PortS
 - 🏗️ **Original Repository:** [PortSwigger/mcp-server](https://github.com/PortSwigger/mcp-server)
 - 📖 **Montoya API Docs:** [portswigger.net/burp/documentation/desktop/extend-burp](https://portswigger.net/burp/documentation/desktop/extend-burp)
 - 🧩 **Bambda Library:** [github.com/PortSwigger/bambdas](https://github.com/PortSwigger/bambdas)
-- 💡 **Community Bambdas:** [gist.github.com/irsdl](https://gist.github.com/irsdl/28bfd1fe6c54c7c98288eeb86da23e6e)
 
 > This fork maintains full compatibility with the original PortSwigger MCP Server while extending it for advanced security automation workflows.
 
